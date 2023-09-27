@@ -1,17 +1,14 @@
-package com.dicoding.favgithubuser.ui
+package com.dicoding.favgithubuser.ui.main
 
-import android.annotation.SuppressLint
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
-import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.dicoding.favgithubuser.R
-import com.dicoding.favgithubuser.data.response.ItemsItem
+import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 import com.dicoding.favgithubuser.databinding.ActivityDetailBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator

@@ -1,4 +1,4 @@
-package com.dicoding.favgithubuser.ui
+package com.dicoding.favgithubuser.ui.main
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.favgithubuser.R
 import com.dicoding.favgithubuser.databinding.ActivityMainBinding
+import com.dicoding.favgithubuser.ui.favorite.FavoriteUserActivity
 import com.dicoding.favgithubuser.ui.setting.SettingActivity
 import com.dicoding.favgithubuser.ui.setting.SettingPreferences
 import com.dicoding.favgithubuser.ui.setting.dataStore
@@ -47,7 +48,8 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
 
-        val mainViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(MainViewModel::class.java)
+        val mainViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(
+            MainViewModel::class.java)
         val userAdapter = UserAdapter()
 
         mainViewModel.listUser.observe(this){ listUsers ->
@@ -81,11 +83,11 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intentMode)
                     true
                 }
-//                R.id.list_fav -> {
-//                    val intentFav = Intent(this, FavoriteActivity::class.java)
-//                    startActivity(intentFav)
-//                    true
-//                }
+                R.id.list_fav -> {
+                        val intentFav = Intent(this, FavoriteUserActivity::class.java)
+                    startActivity(intentFav)
+                    true
+                }
                 else -> false
             }
         }

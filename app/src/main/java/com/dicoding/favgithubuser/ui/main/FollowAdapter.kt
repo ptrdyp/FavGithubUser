@@ -1,10 +1,10 @@
-package com.dicoding.favgithubuser.ui
+package com.dicoding.favgithubuser.ui.main
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.dicoding.favgithubuser.data.response.ItemsItem
+import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 import com.dicoding.favgithubuser.databinding.ItemUserBinding
 
 class FollowAdapter(private val items: List<ItemsItem>) : RecyclerView.Adapter<FollowAdapter.MyViewHolder>() {

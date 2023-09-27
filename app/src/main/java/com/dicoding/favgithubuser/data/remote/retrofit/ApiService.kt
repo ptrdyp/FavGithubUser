@@ -1,8 +1,8 @@
-package com.dicoding.favgithubuser.data.retrofit
+package com.dicoding.favgithubuser.data.remote.retrofit
 
-import com.dicoding.favgithubuser.data.response.DetailUserResponse
-import com.dicoding.favgithubuser.data.response.GithubResponse
-import com.dicoding.favgithubuser.data.response.ItemsItem
+import com.dicoding.favgithubuser.data.remote.response.DetailUserResponse
+import com.dicoding.favgithubuser.data.remote.response.GithubResponse
+import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

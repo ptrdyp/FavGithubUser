@@ -1,4 +1,4 @@
-package com.dicoding.favgithubuser.ui
+package com.dicoding.favgithubuser.ui.main
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.dicoding.favgithubuser.data.response.ItemsItem
+import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 import com.dicoding.favgithubuser.databinding.ItemUserBinding
 
 class UserAdapter : ListAdapter<ItemsItem, UserAdapter.MyViewHolder>(DIFF_CALLBACK) {

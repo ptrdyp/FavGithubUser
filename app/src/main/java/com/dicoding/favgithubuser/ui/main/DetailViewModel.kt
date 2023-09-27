@@ -1,13 +1,13 @@
-package com.dicoding.favgithubuser.ui
+package com.dicoding.favgithubuser.ui.main
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dicoding.favgithubuser.data.response.DetailUserResponse
-import com.dicoding.favgithubuser.data.response.GithubResponse
-import com.dicoding.favgithubuser.data.response.ItemsItem
-import com.dicoding.favgithubuser.data.retrofit.ApiConfig
+import com.dicoding.favgithubuser.data.remote.response.DetailUserResponse
+import com.dicoding.favgithubuser.data.remote.response.GithubResponse
+import com.dicoding.favgithubuser.data.remote.response.ItemsItem
+import com.dicoding.favgithubuser.data.remote.retrofit.ApiConfig
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

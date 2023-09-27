@@ -1,4 +1,4 @@
-package com.dicoding.favgithubuser.data.retrofit
+package com.dicoding.favgithubuser.data.remote.retrofit
 
 import com.dicoding.favgithubuser.BuildConfig
 import okhttp3.Interceptor
@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class ApiConfig {
     companion object{
-        fun getApiService(): ApiService{
+        fun getApiService(): ApiService {
             val authInterceptor = Interceptor{ chain ->
                 val req = chain.request()
                 val mySuperSercretKey = BuildConfig.KEY

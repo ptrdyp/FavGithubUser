@@ -1,4 +1,4 @@
-package com.dicoding.favgithubuser.ui
+package com.dicoding.favgithubuser.ui.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
