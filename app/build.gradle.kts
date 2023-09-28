@@ -2,8 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
-//    id("kotlin-android")
-//    id("com.google.devtools.ksp")
+    id("kotlin-android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -18,6 +18,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
         buildConfigField("String", "KEY", "\"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\"")
 
     }
@@ -47,8 +48,9 @@ android {
 
 dependencies {
 
-//    implementation("androidx.room:room-runtime:2.5.2")
-//    ksp("androidx.room:room-compiler:2.5.2")
+    implementation("androidx.room:room-ktx:2.5.2")
+    implementation("androidx.room:room-runtime:2.5.2")
+    ksp("androidx.room:room-compiler:2.5.2")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")

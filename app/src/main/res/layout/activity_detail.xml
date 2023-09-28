@@ -108,14 +108,16 @@
             app:layout_constraintTop_toBottomOf="@id/tabs"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_add_fav"
+            android:id="@+id/fab_favorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
+            android:tag="Not Saved"
             app:fabSize="normal"
+            android:contentDescription="@string/save_favorite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_favorite"
+            app:srcCompat="@drawable/ic_favorite_border"
             tools:text="@string/favorite_text" />
 
         <ProgressBar

@@ -8,6 +8,8 @@
     <string name="setting_text">Setting</string>
     <string name="dark_mode">Dark Mode </string>
     <string name="favorite_text">Favorite</string>
+    <string name="save_favorite">Save Favorite?</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

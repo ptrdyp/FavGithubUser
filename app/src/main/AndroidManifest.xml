@@ -18,9 +18,6 @@
             android:name=".ui.favorite.FavoriteUserActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.favorite.FavoriteActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.setting.SettingActivity"
             android:exported="false" />
         <activity
