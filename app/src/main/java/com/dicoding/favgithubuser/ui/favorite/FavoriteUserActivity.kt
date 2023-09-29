@@ -22,10 +22,6 @@ class FavoriteUserActivity : AppCompatActivity() {
         }
     }
 
-    private val viewModel by viewModels<FavoriteUserViewModel> {
-        FavoriteUserViewModel.FavoriteUserViewModelFactory(FavoriteUserRepository(this))
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFavoriteUserBinding.inflate(layoutInflater)
@@ -34,9 +30,6 @@ class FavoriteUserActivity : AppCompatActivity() {
         binding.rvFavoriteUser.layoutManager = LinearLayoutManager(this)
         binding.rvFavoriteUser.adapter = favoriteUserAdapter
 
-        viewModel.getFavoriteUsers().observe(this){
-            favoriteUserAdapter.setData(it)
-        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
