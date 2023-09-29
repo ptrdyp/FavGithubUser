@@ -117,7 +117,6 @@
             android:contentDescription="@string/save_favorite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_favorite_border"
             tools:text="@string/favorite_text" />
 
         <ProgressBar

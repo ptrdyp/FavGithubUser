@@ -1,5 +1,6 @@
 package com.dicoding.favgithubuser.ui.favorite
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import com.dicoding.favgithubuser.data.local.entity.UserEntity
 import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 import com.dicoding.favgithubuser.databinding.ActivityDetailBinding
 import com.dicoding.favgithubuser.databinding.ItemUserBinding
+import com.dicoding.favgithubuser.ui.main.DetailActivity
 
 class FavoriteUserAdapter(
     private val data: MutableList<UserEntity.Item> = mutableListOf(),
@@ -40,6 +42,9 @@ class FavoriteUserAdapter(
         holder.bind(users)
 
         holder.itemView.setOnClickListener {
+            val intentDetail = Intent(holder.itemView.context,  DetailActivity::class.java)
+            intentDetail.putExtra("username", users.username)
+            intentDetail.putExtra(DetailActivity.EXTRA_USER, users)
             onFavoriteClick(users)
         }
     }

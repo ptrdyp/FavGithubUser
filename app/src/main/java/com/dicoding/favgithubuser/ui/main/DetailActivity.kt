@@ -47,12 +47,6 @@ class DetailActivity : AppCompatActivity() {
         }
 
         if (user != null && detailViewModel.detailUser.value == null){
-            val userEntity = UserEntity.Item(
-                username = user.login.toString(),
-                avatarUrl = user.avatarUrl,
-                isFavorite = false
-            )
-            userRepository.userDao.insertUsers(userEntity)
             detailViewModel.getUser(user.login.toString())
         }
 
@@ -81,30 +75,41 @@ class DetailActivity : AppCompatActivity() {
 
         val item = intent.getParcelableExtra<UserEntity.Item>("username")
 
-        if (item != null){
-            binding.fabFavorite.setOnClickListener {
-                val userEntity = UserEntity.Item(
-                    username = item.username,
-                    avatarUrl = item.avatarUrl,
-                    isFavorite = true
-                )
-                userRepository.userDao.insertUsers(userEntity)
-                viewModel.setFavorite(userEntity)
-                Log.d("DetailActivity", "Favorite item added")
-            }
-        } else {
-            Log.d("DetailActivity", "Item is null, cannot add to favorites")
+        val fabFavorite = binding.fabFavorite
+
+        binding.fabFavorite.setOnClickListener {
+            val userEntity = UserEntity.Item(
+                username = item?.username ?: "",
+                avatarUrl = item?.avatarUrl ?: "",
+                isFavorite = true
+            )
+            userRepository.userDao.insertUsers(userEntity)
+            viewModel.setFavorite(item)
         }
 
-        val fabFavorite = binding.fabFavorite
+        viewModel.resultSuccessFavorite.observe(this){ isFavorite: Boolean ->
+            binding.fabFavorite.setImageDrawable(
+                ContextCompat.getDrawable(
+                    fabFavorite.context,
+                    if (isFavorite)
+                        R.drawable.ic_favorite
+                    else R.drawable.ic_favorite_border
+                )
+            )
+        }
+
+        viewModel.resultDeleteFavorite.observe(this){ isFavorite: Boolean ->
+            binding.fabFavorite.setImageDrawable(
+                ContextCompat.getDrawable(
+                    fabFavorite.context,
+                    if (isFavorite) R.drawable.ic_favorite
+                    else R.drawable.ic_favorite_border
+                )
+            )
+        }
 
         viewModel.findFavorite(item?.username ?: ""){
             binding.fabFavorite.setImageDrawable(ContextCompat.getDrawable(fabFavorite.context, R.drawable.ic_favorite))
-            if (item != null){
-                Log.d("DetailActivity", "Item sudah ada di favorit")
-            } else {
-                Log.d("DetailActivity", "Item belum ada di favorit")
-            }
         }
 
     }
