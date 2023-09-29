@@ -98,11 +98,10 @@ class DetailActivity : AppCompatActivity() {
 
         val fabFavorite = binding.fabFavorite
 
-
         viewModel.findFavorite(item?.username ?: ""){
             binding.fabFavorite.setImageDrawable(ContextCompat.getDrawable(fabFavorite.context, R.drawable.ic_favorite))
             if (item != null){
-               Log.d("DetailActivity", "Item sudah ada di favorit")
+                Log.d("DetailActivity", "Item sudah ada di favorit")
             } else {
                 Log.d("DetailActivity", "Item belum ada di favorit")
             }
