@@ -1,19 +1,49 @@
 package com.dicoding.favgithubuser.ui.favorite
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.dicoding.favgithubuser.data.UserRepository
 import com.dicoding.favgithubuser.data.local.entity.UserEntity
+import kotlinx.coroutines.launch
 
 class FavoriteUserViewModel(private val userRepository: UserRepository) : ViewModel() {
-    fun getGithubUsers() = userRepository.getGithubUsers()
 
-    fun getFavoriteUsers() = userRepository.getFavoriteUsers()
+    val resultSuccessFavorite = MutableLiveData<Boolean>()
+    val resultDeleteFavorite = MutableLiveData<Boolean>()
 
-    fun saveUser(users: UserEntity){
-        userRepository.setFavoriteUsers(users, true)
+    private var isFavorite = false
+
+    fun setFavorite(item: UserEntity.Item?){
+        viewModelScope.launch {
+            item?.let {
+                isFavorite = it.isFavorite
+                if (isFavorite){
+                    userRepository.userDao.delete(item)
+                    resultDeleteFavorite.value = true
+                } else {
+                    userRepository.userDao.insertUsers(item)
+                    resultSuccessFavorite.value = true
+                }
+            }
+            isFavorite = !isFavorite
+        }
     }
 
-    fun deleteUser(users: UserEntity){
-        userRepository.setFavoriteUsers(users, false)
+    fun findFavorite(username: String, listenFavorite: () -> Unit){
+        viewModelScope.launch {
+            val user = userRepository.userDao.findByUsername(username)
+            if (user != null){
+                listenFavorite()
+                isFavorite = true
+            }
+        }
     }
+
+    class FavoriteUserViewModelFactory(private val userRepository: UserRepository) : ViewModelProvider.NewInstanceFactory(){
+        override fun <T : ViewModel> create(modelClass: Class<T>): T = FavoriteUserViewModel(userRepository) as T
+    }
+
+    fun getFavoriteUsers() = userRepository.userDao.getUsers()
 }

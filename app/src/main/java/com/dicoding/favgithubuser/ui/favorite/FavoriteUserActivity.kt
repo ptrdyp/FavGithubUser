@@ -1,23 +1,29 @@
 package com.dicoding.favgithubuser.ui.favorite
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dicoding.favgithubuser.data.UserRepository
 import com.dicoding.favgithubuser.databinding.ActivityFavoriteUserBinding
+import com.dicoding.favgithubuser.ui.main.DetailActivity
 
 class FavoriteUserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFavoriteUserBinding
-    private val viewModel: FavoriteUserViewModel by viewModels()
-
-    private val favoriteUserAdapter = FavoriteUserAdapter { user ->
-        if (user.isFavorite){
-            viewModel.deleteUser(user)
-        } else {
-            viewModel.saveUser(user)
+    private val favoriteUserAdapter by lazy {
+        FavoriteUserAdapter { user ->
+            Intent(this, DetailActivity::class.java).apply {
+                putExtra("username", user)
+                startActivity(this)
+            }
         }
+    }
+
+    private val viewModel by viewModels<FavoriteUserViewModel> {
+        FavoriteUserViewModel.FavoriteUserViewModelFactory(UserRepository(this))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,17 +31,20 @@ class FavoriteUserActivity : AppCompatActivity() {
         binding = ActivityFavoriteUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.rvFavoriteUser.layoutManager = LinearLayoutManager(this)
         binding.rvFavoriteUser.adapter = favoriteUserAdapter
 
-        viewModel.getFavoriteUsers().observe(this) { favoriteUsers ->
-            binding.progressBar.visibility = View.GONE
-            favoriteUserAdapter.submitList(favoriteUsers)
+        viewModel.getFavoriteUsers().observe(this){
+            favoriteUserAdapter.setData(it)
         }
+    }
 
-        binding.rvFavoriteUser.apply {
-            layoutManager = LinearLayoutManager(context)
-            setHasFixedSize(true)
-            adapter = favoriteUserAdapter
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home -> {
+                finish()
+            }
         }
+        return super.onOptionsItemSelected(item)
     }
 }

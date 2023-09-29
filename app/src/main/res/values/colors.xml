@@ -2,5 +2,55 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="purple">#D3BBFF</color>
+
+<!--    Light scheme -->
+    <color name="primary">#385ba9</color>
+    <color name="on_primary">#ffffff</color>
+    <color name="primary_container">#dae2ff</color>
+    <color name="on_primary_container">#001946</color>
+    <color name="secondary">#4a58a9</color>
+    <color name="on_secondary">#ffffff</color>
+    <color name="secondary_container">#dee0ff</color>
+    <color name="on_secondary_container">#000f5c</color>
+    <color name="tertiary">#4c57a9</color>
+    <color name="on_tertiary">#ffffff</color>
+    <color name="tertiary_container">#dfe0ff</color>
+    <color name="on_tertiary_container">#000c61</color>
+    <color name="error">#ba1a1a</color>
+    <color name="on_error">#ffffff</color>
+    <color name="error_container">#ffdad6</color>
+    <color name="on_error_container">#410002</color>
+    <color name="background">#fffbff</color>
+    <color name="on_background">#2d1600</color>
+    <color name="surface">#fffbff</color>
+    <color name="on_surface">#2d1600</color>
+    <color name="outline">#757780</color>
+    <color name="surface_variant">#e1e2ec</color>
+    <color name="on_surface_variant">#44464f</color>
+
+<!--    Dark Scheme -->
+    <color name="dark_primary">#b1c5ff</color>
+    <color name="dark_on_primary">#002c70</color>
+    <color name="dark_primary_container">#1b438f</color>
+    <color name="dark_on_primary_container">#dae2ff</color>
+    <color name="dark_secondary">#bac3ff</color>
+    <color name="dark_on_secondary">#172778</color>
+    <color name="dark_secondary_container">#313f90</color>
+    <color name="dark_on_secondary_container">#dee0ff</color>
+    <color name="dark_tertiary">#bcc2ff</color>
+    <color name="dark_on_tertiary">#1a2678</color>
+    <color name="dark_tertiary_container">#333f90</color>
+    <color name="dark_on_tertiary_container">#dfe0ff</color>
+    <color name="dark_error">#ffb4ab</color>
+    <color name="dark_on_error">#690005</color>
+    <color name="dark_error_container">#93000a</color>
+    <color name="dark_on_error_container">#ffdad6</color>
+    <color name="dark_background">#2d1600</color>
+    <color name="dark_on_background">#ffdcc0</color>
+    <color name="dark_surface">#2d1600</color>
+    <color name="dark_on_surface">#ffdcc0</color>
+    <color name="dark_outline">#8f9099</color>
+    <color name="dark_surface_variant">#44464f</color>
+    <color name="dark_on_surface_variant">#c5c6d0</color>
+
 </resources>
