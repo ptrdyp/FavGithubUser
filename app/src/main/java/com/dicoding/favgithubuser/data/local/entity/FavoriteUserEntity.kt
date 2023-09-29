@@ -6,11 +6,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
-data class UserEntity(
+data class FavoriteUserEntity(
     val items: MutableList<Item>
 ){
     @Parcelize
-    @Entity(tableName = "users")
+    @Entity(tableName = "favorite_user")
     data class Item (
 
         @PrimaryKey(autoGenerate = false)
@@ -19,9 +19,6 @@ data class UserEntity(
 
         @ColumnInfo(name = "avatarUrl")
         var avatarUrl: String? = null,
-
-        @ColumnInfo(name = "isFavorite")
-        var isFavorite: Boolean
 
     ) : Parcelable
 }

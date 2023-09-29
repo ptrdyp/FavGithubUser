@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dicoding.favgithubuser.data.UserRepository
+import com.dicoding.favgithubuser.data.FavoriteUserRepository
 import com.dicoding.favgithubuser.databinding.ActivityFavoriteUserBinding
 import com.dicoding.favgithubuser.ui.main.DetailActivity
 
@@ -23,7 +23,7 @@ class FavoriteUserActivity : AppCompatActivity() {
     }
 
     private val viewModel by viewModels<FavoriteUserViewModel> {
-        FavoriteUserViewModel.FavoriteUserViewModelFactory(UserRepository(this))
+        FavoriteUserViewModel.FavoriteUserViewModelFactory(FavoriteUserRepository(this))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

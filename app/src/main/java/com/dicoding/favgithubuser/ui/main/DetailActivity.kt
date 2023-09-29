@@ -1,9 +1,9 @@
 package com.dicoding.favgithubuser.ui.main
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
@@ -11,10 +11,11 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.dicoding.favgithubuser.R
-import com.dicoding.favgithubuser.data.UserRepository
-import com.dicoding.favgithubuser.data.local.entity.UserEntity
+import com.dicoding.favgithubuser.data.FavoriteUserRepository
+import com.dicoding.favgithubuser.data.local.entity.FavoriteUserEntity
 import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 import com.dicoding.favgithubuser.databinding.ActivityDetailBinding
+import com.dicoding.favgithubuser.ui.favorite.FavoriteUserActivity
 import com.dicoding.favgithubuser.ui.favorite.FavoriteUserViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -23,12 +24,6 @@ class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
     private val detailViewModel: DetailViewModel by viewModels<DetailViewModel>()
-    private val viewModel by viewModels<FavoriteUserViewModel> {
-        FavoriteUserViewModel.FavoriteUserViewModelFactory(UserRepository(this))
-    }
-    private val userRepository: UserRepository by lazy{
-        UserRepository(this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,45 +68,10 @@ class DetailActivity : AppCompatActivity() {
             showLoading(it)
         }
 
-        val item = intent.getParcelableExtra<UserEntity.Item>("username")
-
-        val fabFavorite = binding.fabFavorite
-
         binding.fabFavorite.setOnClickListener {
-            val userEntity = UserEntity.Item(
-                username = item?.username ?: "",
-                avatarUrl = item?.avatarUrl ?: "",
-                isFavorite = true
-            )
-            userRepository.userDao.insertUsers(userEntity)
-            viewModel.setFavorite(item)
+            val intent = Intent(this, FavoriteUserActivity::class.java)
+            startActivity(intent)
         }
-
-        viewModel.resultSuccessFavorite.observe(this){ isFavorite: Boolean ->
-            binding.fabFavorite.setImageDrawable(
-                ContextCompat.getDrawable(
-                    fabFavorite.context,
-                    if (isFavorite)
-                        R.drawable.ic_favorite
-                    else R.drawable.ic_favorite_border
-                )
-            )
-        }
-
-        viewModel.resultDeleteFavorite.observe(this){ isFavorite: Boolean ->
-            binding.fabFavorite.setImageDrawable(
-                ContextCompat.getDrawable(
-                    fabFavorite.context,
-                    if (isFavorite) R.drawable.ic_favorite
-                    else R.drawable.ic_favorite_border
-                )
-            )
-        }
-
-        viewModel.findFavorite(item?.username ?: ""){
-            binding.fabFavorite.setImageDrawable(ContextCompat.getDrawable(fabFavorite.context, R.drawable.ic_favorite))
-        }
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -122,7 +82,6 @@ class DetailActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 
     private fun showLoading(state: Boolean) {
         binding.progressBar.visibility = if (state) View.VISIBLE else View.GONE

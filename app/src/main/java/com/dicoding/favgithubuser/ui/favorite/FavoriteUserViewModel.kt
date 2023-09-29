@@ -1,49 +1,30 @@
 package com.dicoding.favgithubuser.ui.favorite
 
+import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.dicoding.favgithubuser.data.UserRepository
-import com.dicoding.favgithubuser.data.local.entity.UserEntity
+import com.dicoding.favgithubuser.data.FavoriteUserRepository
+import com.dicoding.favgithubuser.data.local.entity.FavoriteUserEntity
+import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 import kotlinx.coroutines.launch
 
-class FavoriteUserViewModel(private val userRepository: UserRepository) : ViewModel() {
+class FavoriteUserViewModel(application: Application) : ViewModel() {
 
-    val resultSuccessFavorite = MutableLiveData<Boolean>()
-    val resultDeleteFavorite = MutableLiveData<Boolean>()
+    private val mFavoriteUserRepository: FavoriteUserRepository = FavoriteUserRepository(application)
 
-    private var isFavorite = false
-
-    fun setFavorite(item: UserEntity.Item?){
-        viewModelScope.launch {
-            item?.let {
-                isFavorite = it.isFavorite
-                if (isFavorite){
-                    userRepository.userDao.delete(item)
-                    resultDeleteFavorite.value = true
-                } else {
-                    userRepository.userDao.insertUsers(item)
-                    resultSuccessFavorite.value = true
-                }
-            }
-            isFavorite = !isFavorite
-        }
+    fun insert(favoriteUserEntity: FavoriteUserEntity.Item){
+        mFavoriteUserRepository.insert(favoriteUserEntity)
     }
 
-    fun findFavorite(username: String, listenFavorite: () -> Unit){
-        viewModelScope.launch {
-            val user = userRepository.userDao.findByUsername(username)
-            if (user != null){
-                listenFavorite()
-                isFavorite = true
-            }
-        }
-    }
+    fun getAllFavoriteUsers(): LiveData<List<FavoriteUserEntity.Item>> = mFavoriteUserRepository.getAllFavoriteUsers()
 
-    class FavoriteUserViewModelFactory(private val userRepository: UserRepository) : ViewModelProvider.NewInstanceFactory(){
-        override fun <T : ViewModel> create(modelClass: Class<T>): T = FavoriteUserViewModel(userRepository) as T
+    fun setFavorite(item: ItemsItem?){
+        val favoriteUserEntity = FavoriteUserEntity.Item(
+            username = item?.login ?: "",
+            avatarUrl = item?.avatarUrl
+        )
     }
-
-    fun getFavoriteUsers() = userRepository.userDao.getUsers()
 }
