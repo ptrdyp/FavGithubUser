@@ -1,35 +1,41 @@
 package com.dicoding.favgithubuser.ui.main
 
-import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.dicoding.favgithubuser.R
-import com.dicoding.favgithubuser.data.FavoriteUserRepository
 import com.dicoding.favgithubuser.data.local.entity.FavoriteUserEntity
 import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 import com.dicoding.favgithubuser.databinding.ActivityDetailBinding
-import com.dicoding.favgithubuser.ui.favorite.FavoriteUserActivity
-import com.dicoding.favgithubuser.ui.favorite.FavoriteUserViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
 class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
-    private val detailViewModel: DetailViewModel by viewModels<DetailViewModel>()
+    private val detailViewModel: DetailViewModel by viewModels()
+
+    private val favoriteViewModel by viewModels<FavoriteViewModel> {
+        FavoriteViewModel.ViewModelFactory.getInstance(application)
+    }
+
+    private var isFavorite: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val username = intent.getStringExtra(EXTRA_USER) ?: ""
+        val avatar = intent.getStringExtra(EXTRA_AVATAR) ?: ""
+        Bundle().putString(EXTRA_USER, username)
 
         supportActionBar?.title = "Detail User"
 
@@ -42,7 +48,7 @@ class DetailActivity : AppCompatActivity() {
         }
 
         if (user != null && detailViewModel.detailUser.value == null){
-            detailViewModel.getUser(user.login.toString())
+            detailViewModel.getDetailUser(user.login.toString())
         }
 
         detailViewModel.detailUser.observe(this) { detailUser ->
@@ -64,24 +70,42 @@ class DetailActivity : AppCompatActivity() {
             }.attach()
             supportActionBar?.elevation = 0f
         }
+
         detailViewModel.isLoading.observe(this){
             showLoading(it)
         }
 
-        binding.fabFavorite.setOnClickListener {
-            val intent = Intent(this, FavoriteUserActivity::class.java)
-            startActivity(intent)
+        favoriteViewModel.getDataByUsername(username).observe(this){
+            isFavorite = it.isNotEmpty()
+            val favoriteUser = FavoriteUserEntity.Item(username, avatar)
+            if (isFavorite){
+                binding.fabFavorite.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        binding.fabFavorite.context,
+                        R.drawable.ic_favorite
+                    )
+                )
+            } else {
+                binding.fabFavorite.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        binding.fabFavorite.context,
+                        R.drawable.ic_favorite_border
+                    )
+                )
+            }
+
+            binding.fabFavorite.setOnClickListener {
+                if (isFavorite){
+                    favoriteViewModel.delete(favoriteUser)
+                    Toast.makeText(this, R.string.favorite_removed, Toast.LENGTH_SHORT).show()
+                } else {
+                    favoriteViewModel.insert(favoriteUser)
+                    Toast.makeText(this, R.string.favorite_added, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId){
-            android.R.id.home -> {
-                finish()
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     private fun showLoading(state: Boolean) {
         binding.progressBar.visibility = if (state) View.VISIBLE else View.GONE
@@ -89,6 +113,7 @@ class DetailActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_USER = "extra_user"
+        const val EXTRA_AVATAR = "extra_avatar"
 
         @StringRes
         private val TAB_TITLES = intArrayOf(

@@ -1,9 +1,11 @@
 package com.dicoding.favgithubuser.ui.main
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.dicoding.favgithubuser.data.remote.response.DetailUserResponse
 import com.dicoding.favgithubuser.data.remote.response.GithubResponse
 import com.dicoding.favgithubuser.data.remote.response.ItemsItem
@@ -29,12 +31,13 @@ class DetailViewModel : ViewModel(){
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    val errorMessage = MutableLiveData<String>()
 
-    fun getUser(login: String){
-        getDetailUser(login)
+    init {
+        getDetailUser()
     }
 
-    fun getDetailUser(username: String) {
+    fun getDetailUser(username: String = "") {
         _isLoading.value = true
         val client = ApiConfig.getApiService().getDetailUser(username)
         client.enqueue(object : Callback<DetailUserResponse> {

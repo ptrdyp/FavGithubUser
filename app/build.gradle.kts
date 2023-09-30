@@ -19,7 +19,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        buildConfigField("String", "KEY", "\"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\"")
+        buildConfigField("String", "KEY", "\"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\"")
 
     }
 

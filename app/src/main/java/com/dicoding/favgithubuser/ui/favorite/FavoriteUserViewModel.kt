@@ -15,16 +15,4 @@ class FavoriteUserViewModel(application: Application) : ViewModel() {
 
     private val mFavoriteUserRepository: FavoriteUserRepository = FavoriteUserRepository(application)
 
-    fun insert(favoriteUserEntity: FavoriteUserEntity.Item){
-        mFavoriteUserRepository.insert(favoriteUserEntity)
-    }
-
-    fun getAllFavoriteUsers(): LiveData<List<FavoriteUserEntity.Item>> = mFavoriteUserRepository.getAllFavoriteUsers()
-
-    fun setFavorite(item: ItemsItem?){
-        val favoriteUserEntity = FavoriteUserEntity.Item(
-            username = item?.login ?: "",
-            avatarUrl = item?.avatarUrl
-        )
-    }
 }

@@ -9,6 +9,8 @@
     <string name="dark_mode">Dark Mode </string>
     <string name="favorite_text">Favorite</string>
     <string name="save_favorite">Save Favorite?</string>
+    <string name="favorite_removed">Favorite Removed</string>
+    <string name="favorite_added">Added to Favorite</string>
 
     <string name="splash_text">App by @ptrdyp</string>
 
