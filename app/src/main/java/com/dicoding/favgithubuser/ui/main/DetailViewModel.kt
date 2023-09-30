@@ -31,8 +31,6 @@ class DetailViewModel : ViewModel(){
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    val errorMessage = MutableLiveData<String>()
-
     init {
         getDetailUser()
     }
