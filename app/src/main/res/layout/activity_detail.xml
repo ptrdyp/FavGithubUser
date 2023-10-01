@@ -111,7 +111,6 @@
             android:id="@+id/fab_favorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
             android:contentDescription="@string/save_favorite"
             android:tag="Not Saved"
             app:fabSize="normal"

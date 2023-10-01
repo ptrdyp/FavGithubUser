@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/logo_github"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FavGithubUser"
+        android:theme="@style/Base.Theme.FavGithubUser"
         tools:targetApi="31">
         <activity
             android:name=".ui.main.MainActivity"
@@ -28,7 +28,8 @@
             android:exported="false" />
         <activity
             android:name=".ui.splash.SplashActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
