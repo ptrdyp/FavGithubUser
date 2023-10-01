@@ -1,49 +1,56 @@
 package com.dicoding.favgithubuser.ui.favorite
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.dicoding.favgithubuser.R
 import com.dicoding.favgithubuser.data.local.entity.FavoriteUserEntity
-import com.dicoding.favgithubuser.databinding.ActivityDetailBinding
-import com.dicoding.favgithubuser.databinding.ActivityFavoriteUserBinding
 import com.dicoding.favgithubuser.databinding.ItemUserBinding
 import com.dicoding.favgithubuser.ui.main.DetailActivity
 
 class FavoriteUserAdapter(
-    var listFavorite: List<FavoriteUserEntity.Item>
+    private val listFavorite: MutableList<FavoriteUserEntity.Item>
 ) : RecyclerView.Adapter<FavoriteUserAdapter.MyViewHolder>() {
 
-    class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(
-        itemView
+    private lateinit var onItemClickCallback: OnItemClickCallback
+
+    interface OnItemClickCallback{
+        fun onItemClicked(data: FavoriteUserEntity.Item)
+    }
+
+    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback){
+        this.onItemClickCallback = onItemClickCallback
+    }
+
+    inner class MyViewHolder(private val binding: ItemUserBinding) : RecyclerView.ViewHolder(
+        binding.root
     ){
-        val tvItem: TextView = itemView.findViewById(R.id.tvItem)
-        val imageView: ImageView = itemView.findViewById(R.id.imageView)
+        fun bind(users: FavoriteUserEntity.Item){
+            binding.tvUsername.text = users.username
+            Log.d("FavoriteUserAdapter", "URL profile: ${users.avatarUrl}")
+            Glide.with(itemView.context)
+                .load(users.avatarUrl)
+                .into(binding.circleAvatar)
+        }
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.tvItem.text = listFavorite[position].username
-        Glide.with(holder.imageView.context).load(listFavorite[position].avatarUrl)
-            .into(holder.imageView)
+        val users = listFavorite[position]
+        holder.bind(users)
 
         holder.itemView.setOnClickListener {
             val intentDetail = Intent(holder.itemView.context,  DetailActivity::class.java)
-            intentDetail.putExtra(DetailActivity.EXTRA_USER, listFavorite[position].username)
-            intentDetail.putExtra(DetailActivity.EXTRA_AVATAR, listFavorite[position].avatarUrl)
-            holder.itemView.context.startActivity(intentDetail)
+            intentDetail.putExtra("username", users.username)
+            intentDetail.putExtra(DetailActivity.EXTRA_USER, users)
+            onItemClickCallback.onItemClicked(users)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
-        return MyViewHolder(itemView)
+        val binding = ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MyViewHolder(binding)
     }
 
     override fun getItemCount(): Int = listFavorite.size
