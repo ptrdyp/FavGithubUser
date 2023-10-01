@@ -1,6 +1,7 @@
 package com.dicoding.favgithubuser.ui.main
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -99,6 +100,9 @@ class DetailActivity : AppCompatActivity() {
             binding.fabFavorite.setOnClickListener {
                 if (isFavorite){
                     detailViewModel.delete(favoriteUser)
+                    val resultIntent = Intent()
+                    resultIntent.putExtra("data_deleted", true)
+                    setResult(RESULT_OK, resultIntent)
                     Toast.makeText(this, R.string.favorite_removed, Toast.LENGTH_SHORT).show()
                 } else {
                     detailViewModel.insert(favoriteUser)
