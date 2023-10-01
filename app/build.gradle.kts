@@ -53,6 +53,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     testImplementation("junit:junit:4.12")
     testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.12")
     ksp("androidx.room:room-compiler:2.5.2")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
