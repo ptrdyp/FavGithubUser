@@ -53,7 +53,10 @@ class DetailActivity : AppCompatActivity() {
                 binding.tvDetailName.text = it.name
                 binding.tvDetailUsername.text = it.login
                 binding.tvFollowers.text = resources.getString(R.string.followers_format, it.followers)
-                binding.tvFollowing.text = resources.getString(R.string.following_format, it.followers)
+                binding.tvFollowing.text = resources.getString(R.string.following_format, it.following)
+            } else {
+                Toast.makeText(this, R.string.error_loading_data, Toast.LENGTH_SHORT).show()
+                binding.tvErrorMessage.text = getString(R.string.error_loading_data)
             }
         }
 

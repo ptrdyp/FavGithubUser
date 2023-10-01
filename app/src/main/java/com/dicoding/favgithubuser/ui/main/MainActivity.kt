@@ -75,7 +75,11 @@ class MainActivity : AppCompatActivity() {
         binding.rvUser.adapter = adapter
 
         mainViewModel.listUser.observe(this){ listUsers ->
-            adapter.setList(listUsers)
+            if (listUsers.isNotEmpty()){
+                adapter.setList(listUsers)
+            } else{
+                binding.tvErrorMessage.text = getString(R.string.error_loading_data)
+            }
         }
 
         val itemDecoration = DividerItemDecoration(this, layoutManager.orientation)

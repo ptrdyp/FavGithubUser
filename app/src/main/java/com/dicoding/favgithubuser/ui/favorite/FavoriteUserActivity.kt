@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dicoding.favgithubuser.R
 import com.dicoding.favgithubuser.data.local.entity.FavoriteUserEntity
 import com.dicoding.favgithubuser.databinding.ActivityFavoriteUserBinding
 import com.dicoding.favgithubuser.ui.main.DetailActivity
@@ -26,7 +27,11 @@ class FavoriteUserActivity : AppCompatActivity() {
 
         val favoriteUserViewModel = obtainViewModel(this)
         favoriteUserViewModel.getAllFavoriteUsers().observe(this){
-            setFavoriteUser(it)
+            if (it.isNotEmpty()){
+                setFavoriteUser(it)
+            } else{
+                binding.tvErrorMessage.text = getString(R.string.error_loading_data)
+            }
         }
 
         favoriteUserViewModel.isLoading.observe(this){
