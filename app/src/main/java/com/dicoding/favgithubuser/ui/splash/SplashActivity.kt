@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorRes
@@ -27,6 +28,8 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        showLoading(true)
 
         Handler().postDelayed({
             startActivity(Intent(this, MainActivity::class.java))
@@ -57,5 +60,9 @@ class SplashActivity : AppCompatActivity() {
 
     fun TextView.changeTextColor(@ColorRes color: Int){
         setTextColor(ContextCompat.getColor(this.context, color))
+    }
+
+    private fun showLoading(state: Boolean) {
+        binding.progressBar.visibility = if (state) View.VISIBLE else View.GONE
     }
 }
