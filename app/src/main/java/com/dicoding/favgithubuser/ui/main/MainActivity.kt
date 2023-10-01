@@ -3,6 +3,7 @@ package com.dicoding.favgithubuser.ui.main
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
@@ -11,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.favgithubuser.R
+import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 import com.dicoding.favgithubuser.databinding.ActivityMainBinding
 import com.dicoding.favgithubuser.ui.favorite.FavoriteUserActivity
 import com.dicoding.favgithubuser.ui.setting.SettingActivity
@@ -21,13 +23,14 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var adapter: UserAdapter
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        start setting
         val settingPreferences = SettingPreferences.getInstance(dataStore)
 
         lifecycleScope.launch {
@@ -39,7 +42,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-//        end setting
 
         with(binding){
             searchView.setupWithSearchBar(searchBar)
@@ -47,23 +49,35 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
 
-        val mainViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(
-            MainViewModel::class.java)
-
-        val userAdapter = UserAdapter()
-
-        mainViewModel.listUser.observe(this){ listUsers ->
-            userAdapter.submitList(listUsers)
-        }
-
-        binding.rvUser.adapter = userAdapter
+        mainViewModel = ViewModelProvider(
+            this, ViewModelProvider.NewInstanceFactory()
+        )[MainViewModel::class.java]
 
         mainViewModel.isLoading.observe(this){
             showLoading(it)
         }
 
-        val layoutManager = LinearLayoutManager(this)
+        adapter = UserAdapter()
+        adapter.setOnItemClickCallback(object : UserAdapter.OnItemClickCallback{
+            override fun onItemClicked(data: ItemsItem) {
+                Intent(this@MainActivity, DetailActivity::class.java).also {
+                    it.putExtra(DetailActivity.EXTRA_USER, data.login)
+                    it.putExtra(DetailActivity.EXTRA_AVATAR, data.avatarUrl)
+                    it.putExtra(Intent.EXTRA_TITLE, data.login)
+                    startActivity(it)
+                }
+            }
+        })
+
+        val layoutManager = LinearLayoutManager(this@MainActivity)
         binding.rvUser.layoutManager = layoutManager
+        binding.rvUser.setHasFixedSize(true)
+        binding.rvUser.adapter = adapter
+
+        mainViewModel.listUser.observe(this){ listUsers ->
+            adapter.setList(listUsers)
+        }
+
         val itemDecoration = DividerItemDecoration(this, layoutManager.orientation)
         binding.rvUser.addItemDecoration(itemDecoration)
 

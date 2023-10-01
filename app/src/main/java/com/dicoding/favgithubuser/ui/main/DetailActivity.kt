@@ -1,17 +1,18 @@
 package com.dicoding.favgithubuser.ui.main
 
-import android.os.Build
+import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.dicoding.favgithubuser.R
 import com.dicoding.favgithubuser.data.local.entity.FavoriteUserEntity
-import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 import com.dicoding.favgithubuser.databinding.ActivityDetailBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -19,10 +20,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBinding
-    private val detailViewModel: DetailViewModel by viewModels()
-
-    private val favoriteViewModel by viewModels<FavoriteViewModel> {
-        FavoriteViewModel.ViewModelFactory.getInstance(application)
+    private val detailViewModel by viewModels<DetailViewModel> {
+        DetailViewModel.ViewModelFactory.getInstance(application)
     }
 
     private var isFavorite: Boolean = false
@@ -33,51 +32,49 @@ class DetailActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val username = intent.getStringExtra(EXTRA_USER) ?: ""
-        val avatar = intent.getStringExtra(EXTRA_AVATAR) ?: ""
-        Bundle().putString(EXTRA_USER, username)
-
         supportActionBar?.title = "Detail User"
 
-        val user = if (Build.VERSION.SDK_INT >= 33) {
-            @Suppress("DEPRECATION")
-            intent.getParcelableExtra<ItemsItem>(EXTRA_USER)
-        } else {
-            @Suppress("DEPRECATION")
-            intent.getParcelableExtra<ItemsItem>(EXTRA_USER)
-        }
+        val username = intent.getStringExtra(EXTRA_USER) ?: ""
+        val avatarUrl = intent.getStringExtra(EXTRA_AVATAR) ?: ""
+        Bundle().putString(EXTRA_USER, username)
 
-        if (user != null && detailViewModel.detailUser.value == null){
-            detailViewModel.getDetailUser(user.login.toString())
-        }
+        Log.d(TAG, "AvatarUrl in DetailActivity: $avatarUrl")
+        Log.d(TAG, "Username in DetailActivity: $username")
 
-        detailViewModel.detailUser.observe(this) { detailUser ->
-            Glide.with(this@DetailActivity)
-                .load(detailUser.avatarUrl)
-                .into(binding.profileImage)
-            binding.tvDetailName.text = detailUser.name
-            binding.tvDetailUsername.text = detailUser.login
-            binding.tvFollowers.text = "${detailUser.followers} Followers"
-            binding.tvFollowing.text = "${detailUser.following} Followings"
+        detailViewModel.getDetailUser(username)
+        showLoading(true)
 
-            val sectionsPagerAdapter = SectionsPagerAdapter(this@DetailActivity)
-            sectionsPagerAdapter.username = detailUser.login.toString()
-            binding.viewPager.adapter = sectionsPagerAdapter
-            val tabs: TabLayout = binding.tabs
-
-            TabLayoutMediator(tabs, binding.viewPager){ tab, position ->
-                tab.text = resources.getString(TAB_TITLES[position])
-            }.attach()
-            supportActionBar?.elevation = 0f
+        detailViewModel.detailUser.observe(this){
+            showLoading(false)
+            if (it != null){
+                Glide.with(this)
+                    .load(it.avatarUrl)
+                    .into(binding.profileImage)
+                binding.tvDetailName.text = it.name
+                binding.tvDetailUsername.text = it.login
+                binding.tvFollowers.text = resources.getString(R.string.followers_format, it.followers)
+                binding.tvFollowing.text = resources.getString(R.string.following_format, it.followers)
+            }
         }
 
         detailViewModel.isLoading.observe(this){
             showLoading(it)
         }
 
-        favoriteViewModel.getDataByUsername(username).observe(this){
+        supportActionBar?.elevation = 0f
+
+        val sectionsPagerAdapter = SectionsPagerAdapter(this)
+        sectionsPagerAdapter.username = username
+        val viewPager: ViewPager2 = binding.viewPager
+        viewPager.adapter = sectionsPagerAdapter
+        val tabs: TabLayout = binding.tabs
+        TabLayoutMediator(tabs, viewPager){ tabLayout, position ->
+            tabLayout.text = resources.getString(TAB_TITLES[position])
+        }.attach()
+
+        detailViewModel.getDataByUsername(username).observe(this){
             isFavorite = it.isNotEmpty()
-            val favoriteUser = FavoriteUserEntity.Item(username, avatar)
+            val favoriteUser = FavoriteUserEntity.Item(username, avatarUrl)
             if (isFavorite){
                 binding.fabFavorite.setImageDrawable(
                     ContextCompat.getDrawable(
@@ -85,6 +82,7 @@ class DetailActivity : AppCompatActivity() {
                         R.drawable.ic_favorite
                     )
                 )
+                binding.fabFavorite.contentDescription = getString(R.string.favorite_removed)
             } else {
                 binding.fabFavorite.setImageDrawable(
                     ContextCompat.getDrawable(
@@ -92,20 +90,21 @@ class DetailActivity : AppCompatActivity() {
                         R.drawable.ic_favorite_border
                     )
                 )
+                binding.fabFavorite.contentDescription = getString(R.string.favorite_added)
             }
 
             binding.fabFavorite.setOnClickListener {
                 if (isFavorite){
-                    favoriteViewModel.delete(favoriteUser)
+                    detailViewModel.delete(favoriteUser)
                     Toast.makeText(this, R.string.favorite_removed, Toast.LENGTH_SHORT).show()
                 } else {
-                    favoriteViewModel.insert(favoriteUser)
+                    detailViewModel.insert(favoriteUser)
                     Toast.makeText(this, R.string.favorite_added, Toast.LENGTH_SHORT).show()
                 }
             }
         }
-    }
 
+    }
 
     private fun showLoading(state: Boolean) {
         binding.progressBar.visibility = if (state) View.VISIBLE else View.GONE

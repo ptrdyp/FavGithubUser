@@ -9,46 +9,68 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 import com.dicoding.favgithubuser.databinding.ItemUserBinding
+import com.dicoding.favgithubuser.ui.favorite.FavoriteUserAdapter
 
-class UserAdapter : ListAdapter<ItemsItem, UserAdapter.MyViewHolder>(DIFF_CALLBACK) {
+class UserAdapter : RecyclerView.Adapter<UserAdapter.MyViewHolder>() {
+
+    private val listUser = ArrayList<ItemsItem>()
+    private var onItemClickCallback: OnItemClickCallback? = null
+
+    interface OnItemClickCallback{
+        fun onItemClicked(data: ItemsItem)
+    }
+
+    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback){
+        this.onItemClickCallback = onItemClickCallback
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val binding = ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)
     }
 
-    class MyViewHolder(val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root){
-        fun bind(user: ItemsItem){
-            binding.tvUsername.text = user.login
+    override fun getItemCount(): Int = listUser.size
 
+    fun setList(newList: List<ItemsItem>){
+        val diffResult = DiffUtil.calculateDiff(MainDiffCallback(listUser, newList))
+        listUser.clear()
+        listUser.addAll(newList)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    inner class MyViewHolder(private val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root){
+        fun bind(user: ItemsItem){
             Glide.with(binding.circleAvatar.context)
                 .load(user.avatarUrl)
                 .into(binding.circleAvatar)
+            binding.tvUsername.text = user.login
+
+            itemView.setOnClickListener {
+                onItemClickCallback?.onItemClicked(user)
+            }
         }
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val user = getItem(position)
+        val user = listUser[position]
         holder.bind(user)
-
-        holder.itemView.setOnClickListener {
-            val intentDetail = Intent(holder.itemView.context, DetailActivity::class.java)
-            intentDetail.putExtra("username", user.login)
-            intentDetail.putExtra(DetailActivity.EXTRA_USER, user)
-            holder.itemView.context.startActivity(intentDetail)
-        }
 
     }
 
-    companion object{
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ItemsItem>(){
-            override fun areItemsTheSame(oldItem: ItemsItem, newItem: ItemsItem): Boolean {
-                return oldItem == newItem
-            }
+    class MainDiffCallback(
+        private val oldList: List<ItemsItem>,
+        private val newList: List<ItemsItem>
+    ) : DiffUtil.Callback() {
+        override fun getOldListSize(): Int = oldList.size
 
-            override fun areContentsTheSame(oldItem: ItemsItem, newItem: ItemsItem): Boolean {
-                return oldItem == newItem
-            }
+        override fun getNewListSize(): Int = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].id == newList[newItemPosition].id
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition] == newList[newItemPosition]
         }
     }
 }

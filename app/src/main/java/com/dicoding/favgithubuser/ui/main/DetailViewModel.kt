@@ -6,21 +6,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.dicoding.favgithubuser.data.FavoriteUserRepository
+import com.dicoding.favgithubuser.data.local.entity.FavoriteUserEntity
 import com.dicoding.favgithubuser.data.remote.response.DetailUserResponse
-import com.dicoding.favgithubuser.data.remote.response.GithubResponse
 import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 import com.dicoding.favgithubuser.data.remote.retrofit.ApiConfig
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DetailViewModel : ViewModel(){
-
-    private val _user = MutableLiveData<GithubResponse>()
-    val user: LiveData<GithubResponse> = _user
+class DetailViewModel(application: Application) : ViewModel(){
 
     private val _detailUser = MutableLiveData<DetailUserResponse>()
-    val detailUser : LiveData<DetailUserResponse> = _detailUser
+    val detailUser : MutableLiveData<DetailUserResponse> = _detailUser
 
     private val _followers = MutableLiveData<List<ItemsItem>>()
     val followers: LiveData<List<ItemsItem>> = _followers
@@ -30,6 +28,18 @@ class DetailViewModel : ViewModel(){
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
+
+    private val favoriteUserRepository: FavoriteUserRepository = FavoriteUserRepository(application)
+
+    fun insert(user: FavoriteUserEntity.Item){
+        favoriteUserRepository.insert(user)
+    }
+
+    fun delete(user: FavoriteUserEntity.Item){
+        favoriteUserRepository.delete(user)
+    }
+
+    fun getDataByUsername(user: String) = favoriteUserRepository.getDataByUsername(user)
 
     init {
         getDetailUser()
@@ -46,6 +56,8 @@ class DetailViewModel : ViewModel(){
                 _isLoading.value = false
                 if (response.isSuccessful && response.body() != null){
                     _detailUser.value = response.body()
+                    val avatarUrl = response.body()?.avatarUrl ?: ""
+                    Log.d(TAG, "AvatarUrl in getDetailUser: $avatarUrl")
                 } else {
                     Log.e(TAG, "onResponse: ${response.message()}")
                 }
@@ -58,9 +70,9 @@ class DetailViewModel : ViewModel(){
         })
     }
 
-    fun getFollowers(login: String){
+    fun getFollowers(username: String = ""){
         _isLoading.value = true
-        val client = ApiConfig.getApiService().getUserFollowers(login)
+        val client = ApiConfig.getApiService().getUserFollowers(username)
         client.enqueue(object : Callback<List<ItemsItem>> {
             override fun onResponse(
                 call: Call<List<ItemsItem>>,
@@ -83,9 +95,9 @@ class DetailViewModel : ViewModel(){
         })
     }
 
-    fun getFollowings(login: String){
+    fun getFollowings(username: String = ""){
         _isLoading.value = true
-        val client = ApiConfig.getApiService().getUserFollowings(login)
+        val client = ApiConfig.getApiService().getUserFollowings(username)
         client.enqueue(object : Callback<List<ItemsItem>> {
             override fun onResponse(
                 call: Call<List<ItemsItem>>,
@@ -107,6 +119,31 @@ class DetailViewModel : ViewModel(){
                 Log.e(TAG, "onFailure: ${t.message}")
             }
         })
+    }
+
+    class ViewModelFactory(private val application: Application) : ViewModelProvider.NewInstanceFactory(){
+        companion object{
+            @Volatile
+            private var INSTANCE: ViewModelFactory? = null
+
+            @JvmStatic
+            fun getInstance(application: Application): ViewModelFactory{
+                if (INSTANCE == null){
+                    synchronized(ViewModelFactory::class.java){
+                        INSTANCE = ViewModelFactory(application)
+                    }
+                }
+                return INSTANCE as ViewModelFactory
+            }
+        }
+
+        @Suppress("UNCHECKED_CAST")
+        override fun <view : ViewModel> create(modelClass: Class<view>): view {
+            if (modelClass.isAssignableFrom(DetailViewModel::class.java)){
+                return DetailViewModel(application) as view
+            }
+            throw IllegalArgumentException("Unknown ViewModel Class: ${modelClass.name}")
+        }
     }
 
     companion object{

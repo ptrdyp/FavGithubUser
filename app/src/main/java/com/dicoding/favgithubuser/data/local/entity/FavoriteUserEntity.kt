@@ -15,10 +15,10 @@ data class FavoriteUserEntity(
 
         @PrimaryKey(autoGenerate = false)
         @ColumnInfo(name = "username")
-        var username: String = "",
+        var username: String,
 
         @ColumnInfo(name = "avatarUrl")
-        var avatarUrl: String? = null,
+        var avatarUrl: String?
 
     ) : Parcelable
 }

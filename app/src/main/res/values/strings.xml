@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Github User</string>
     <string name="user_name">Username</string>
+    <string name="followers_format">%d Followers</string>
+    <string name="following_format">%d Followings</string>
     <string name="followers">Followers</string>
     <string name="following">Followings</string>
     <string name="searchbar_hint">Mau cari siapa?</string>

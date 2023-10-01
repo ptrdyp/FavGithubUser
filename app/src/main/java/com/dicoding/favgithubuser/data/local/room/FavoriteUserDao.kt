@@ -7,6 +7,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.dicoding.favgithubuser.data.local.entity.FavoriteUserEntity
+import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 
 @Dao
 interface FavoriteUserDao {
@@ -15,10 +16,10 @@ interface FavoriteUserDao {
     fun getAllFavorites(): LiveData<List<FavoriteUserEntity.Item>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertUsers(username: FavoriteUserEntity.Item)
+    fun insertUsers(user: FavoriteUserEntity.Item)
 
     @Query("SELECT * FROM favorite_user WHERE username = :username")
-    fun getDataByUsername(username: String): LiveData<List<FavoriteUserEntity.Item>>
+    fun getDataByUsername(username: String): LiveData<List<ItemsItem>>
 
     @Delete
     fun delete(username: FavoriteUserEntity.Item)

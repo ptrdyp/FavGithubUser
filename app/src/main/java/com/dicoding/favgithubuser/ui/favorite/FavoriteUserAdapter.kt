@@ -11,19 +11,20 @@ import com.dicoding.favgithubuser.databinding.ItemUserBinding
 import com.dicoding.favgithubuser.ui.main.DetailActivity
 
 class FavoriteUserAdapter(
-    private val data: MutableList<FavoriteUserEntity.Item> = mutableListOf(),
-    private val onFavoriteClick: (FavoriteUserEntity.Item) -> Unit
+    private val listFavorite: MutableList<FavoriteUserEntity.Item>
 ) : RecyclerView.Adapter<FavoriteUserAdapter.MyViewHolder>() {
 
-    fun setData(data: MutableList<FavoriteUserEntity.Item>){
-        this.data.clear()
-        this.data.addAll(data)
-        notifyDataSetChanged()
-    }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder =
-        MyViewHolder(ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+    private lateinit var onItemClickCallback: OnItemClickCallback
 
-    class MyViewHolder(private val binding: ItemUserBinding) : RecyclerView.ViewHolder(
+    interface OnItemClickCallback{
+        fun onItemClicked(data: FavoriteUserEntity.Item)
+    }
+
+    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback){
+        this.onItemClickCallback = onItemClickCallback
+    }
+
+    inner class MyViewHolder(private val binding: ItemUserBinding) : RecyclerView.ViewHolder(
         binding.root
     ){
         fun bind(users: FavoriteUserEntity.Item){
@@ -36,16 +37,21 @@ class FavoriteUserAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val users = data[position]
+        val users = listFavorite[position]
         holder.bind(users)
 
         holder.itemView.setOnClickListener {
             val intentDetail = Intent(holder.itemView.context,  DetailActivity::class.java)
             intentDetail.putExtra("username", users.username)
             intentDetail.putExtra(DetailActivity.EXTRA_USER, users)
-            onFavoriteClick(users)
+            onItemClickCallback.onItemClicked(users)
         }
     }
 
-    override fun getItemCount(): Int = data.size
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+        val binding = ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MyViewHolder(binding)
+    }
+
+    override fun getItemCount(): Int = listFavorite.size
 }

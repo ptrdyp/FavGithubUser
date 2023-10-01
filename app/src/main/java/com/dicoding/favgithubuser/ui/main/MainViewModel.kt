@@ -1,9 +1,11 @@
 package com.dicoding.favgithubuser.ui.main
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.dicoding.favgithubuser.data.remote.response.GithubResponse
 import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 import com.dicoding.favgithubuser.data.remote.retrofit.ApiConfig
