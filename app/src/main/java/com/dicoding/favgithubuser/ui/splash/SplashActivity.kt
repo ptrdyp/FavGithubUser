@@ -31,7 +31,7 @@ class SplashActivity : AppCompatActivity() {
 
         showLoading(true)
 
-        Handler().postDelayed({
+        Handler(mainLooper).postDelayed({
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }, splashTimeOut)

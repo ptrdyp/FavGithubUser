@@ -5,10 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dicoding.favgithubuser.data.remote.response.ItemsItem
 import com.dicoding.favgithubuser.databinding.FragmentFollowBinding
 
 class FollowFragment : Fragment() {
@@ -16,6 +14,7 @@ class FollowFragment : Fragment() {
     private lateinit var detailViewModel: DetailViewModel
     private lateinit var adapter: UserAdapter
     private lateinit var binding: FragmentFollowBinding
+//    Hindari mendeklarasi kelas Binding dengan lateinit karena hanya akan menyebabkan memory leaks.
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -48,13 +48,15 @@ class DetailActivity : AppCompatActivity() {
         detailViewModel.detailUser.observe(this){
             showLoading(false)
             if (it != null){
-                Glide.with(this)
-                    .load(it.avatarUrl)
-                    .into(binding.profileImage)
-                binding.tvDetailName.text = it.name
-                binding.tvDetailUsername.text = it.login
-                binding.tvFollowers.text = resources.getString(R.string.followers_format, it.followers)
-                binding.tvFollowing.text = resources.getString(R.string.following_format, it.following)
+                binding.apply {
+                    Glide.with(this@DetailActivity)
+                        .load(it.avatarUrl)
+                        .into(profileImage)
+                    tvDetailName.text = it.name
+                    tvDetailUsername.text = it.login
+                    tvFollowers.text = resources.getString(R.string.followers_format, it.followers)
+                    tvFollowing.text = resources.getString(R.string.following_format, it.following)
+                }
             } else {
                 Toast.makeText(this, R.string.error_loading_data, Toast.LENGTH_SHORT).show()
                 binding.tvErrorMessage.text = getString(R.string.error_loading_data)

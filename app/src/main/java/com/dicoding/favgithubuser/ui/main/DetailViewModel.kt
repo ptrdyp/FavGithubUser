@@ -66,6 +66,7 @@ class DetailViewModel(application: Application) : ViewModel(){
             override fun onFailure(call: Call<DetailUserResponse>, t: Throwable) {
                 _isLoading.value = false
                 Log.e(TAG, "onFailure: ${t.message}")
+//                Sebaiknya manfaatkan onFailure untuk menampilkan pesan error ke pengguna (contoh: Toast) daripada menampilkannya menggunakan log
             }
         })
     }
